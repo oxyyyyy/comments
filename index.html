@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Comments</title>
+    <!-- Bootstrap css and my own css -->
+    <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+        integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.2/angular.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="js/backand.min.js"></script>
+    <script src="https://socket.backand.com/socket.io/socket.io.js"></script>
+
+</head>
+<body>
+
+    <div class="container" ng-app="Comments">
+        <div class="page-header">
+            <h1>Comments</h1>
+            <h3>
+              Leave your post here
+            </h3>
+        </div>
+		<!-- Hook on the controller for this view and specify when to show it using ng-hide -->
+        <div ng-controller="commentCtrl as comment">
+        	<!-- top search bar with start quiz button using bootstrap -->
+            <div class="col-md-8">
+                <div class="commentBox"
+                     ng-show="!comment.authData.signedIn">
+                    <div class="form-group row">
+                        <p id="log_in_label">You are not logged in</p>
+                        <button class="btn btn-success pull-right"
+                                ng-click="comment.authData.setAuth()"
+                                data-toggle="modal"
+                                data-target=".logIn">
+                            <!-- ng-click="comment.logIn()"> -->
+                        Log in
+                        </button>
+                    </div>
+                    <div class="form-group row">
+                        <p>or not registered</p>
+                        <button class="btn btn-warning pull-right"
+                                ng-click="comment.authData.setReg()"
+                                data-toggle="modal"
+                                data-target=".logIn">
+                        Registrate
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal logIn"
+                     ng-controller="authCtrl as auth">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                        	  <!-- more usage of angular data binding -->
+                                <h2>ТЫ ПИДОР</h2>
+                            </div>
+                            <div class="modal-body">
+                                <form class="registration_form">
+                            			  <div class="form-group row">
+                              				  <label for="email" class="col-md-2 offset-md-3 col-form-label">Email</label>
+                            	  			  <div class="col-md-4">
+                            	    				  <input class="form-control"
+                                                   type="email"
+                                                   ng-model="auth.email">
+                            	  			  </div>
+                              		  </div>
+                                    <div class="form-group row"
+                                         ng-show="auth.userData.want2reg">
+                                        <label for="name" class="col-md-2 offset-md-3 col-form-label">Name</label>
+                                        <div class="col-md-4">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   ng-model="auth.name">
+                                        </div>
+                                    </div>
+                              		  <div class="form-group row">
+                            	  			  <label for="password" class="col-md-2 offset-md-3 col-form-label">Password</label>
+                            	  			  <div class="col-md-4">
+                            	    				  <input class="form-control"
+                                                   type="password"
+                                                   ng-model="auth.pass">
+                            	  		    </div>
+                            			  </div>
+                            			  <div class="form-group row"
+                                         ng-show="auth.userData.want2reg">
+                            	  		    <label for="password" class="col-md-2 offset-md-3 col-form-label">Confirm password</label>
+                            	  			  <div class="col-md-4">
+                            	    				    <input class="form-control"
+                                                     type="password"
+                                                     ng-model="auth.passConfirm">
+                            	  			  </div>
+                            			  </div>
+                            			  <div class="col-md-6 offset-md-3">
+                            					  <button class="btn btn-primary confirm-auth"
+                                                data-dismiss="modal"
+                                                ng-click="auth.authorizate()">
+                                        {{auth.userData.cnfrmBtn}}
+                                        </button>
+                            			  </div>
+                                    <div class="col-md-6 offset-md-3">
+                            					  <button class="btn btn-success toggle-auth"
+                                                ng-click="auth.userData.toggleAuth()">
+                                        {{auth.userData.tglBtn}}
+                                        </button>
+                            			  </div>
+                            	  </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+              <form class="well well-sm clearfix commentForm"
+                    ng-show="comment.authData.signedIn">
+                  <input
+                      type="text"
+                      placeholder="Your Name"
+                      class="form-control"
+                      ng-model="comment.author">
+                  <button class="btn btn-warning pull-right"
+                      ng-click="comment.addComment()">
+                      <strong>Post comment</strong>
+                  </button>
+                  <textarea class = "comment form-control"
+                      ng-model="comment.text"
+                      rows=5>
+                  </textarea>
+              </form>
+          </div>
+        </div>
+
+        <div ng-controller="commentsListCtrl as list"
+             ng-init="list.readComments()">
+            <div class="row">
+              <div class="col-sm-6 commentBox" ng-repeat="singleComment in list.data"
+                                               ng-init="list.commentOnCreation()">
+                <button class="btn btn-danger pull-right"
+                        ng-click="list.removeComment(singleComment)">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+                <button class="btn btn-info pull-right"
+                        ng-click="list.allowUpdate(singleComment)"
+                        ng-show="!singleComment.editable">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </button>
+                <button class="btn btn-success pull-right"
+                        ng-click="list.saveUpdatedComment(singleComment)"
+                        ng-show="singleComment.editable">
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                </button>
+                  <h4>{{singleComment.author}}</h4>
+                  <input  type="text"
+                          value={{singleComment.comment}}
+                          ng-disabled="!singleComment.editable">
+              </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- third party js -->
+
+    <!-- Our application scripts -->
+    <script src="js/app.js"></script>
+    <script src="js/controllers/auth.js"></script>
+    <script src="js/controllers/comments.js"></script>
+    <script src="js/controllers/commentslist.js"></script>
+    <script src="js/services/authservice.js"></script>
+    <script src="js/factories/authinfo.js"></script>
+    <script src="js/factories/dataservice.js"></script>
+
+
+</body>
+</html>
