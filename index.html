@@ -26,7 +26,10 @@
                 <div>
                     {{comment.currentUser.name || "Guest"}}
                     <span class="pull-right">
-                    Sign In/Up
+                        <button data-toggle="modal"
+                                data-target=".logIn">
+                        Sign In/Up
+                        </button>
                     </span>
                 </div>
             </div>
@@ -34,13 +37,13 @@
                 <div class="commentBox"
                      ng-show="!comment.currentUser.name">
                     <div class="form-group row">
-                        <p>You are not logged in</p>
+                        <p>Вы не авторизированы</p>
                         <button class="btn btn-success pull-right"
                                 ng-click=""
                                 data-toggle="modal"
                                 data-target=".logIn">
                             <!-- ng-click="comment.logIn()"> -->
-                        Log in
+                        Войти
                         </button>
                     </div>
                 </div>
@@ -110,14 +113,14 @@
                             <div class="col-md-6 offset-md-3">
                                 <button class="btn btn-primary confirm-auth"
                                         data-dismiss="modal"
-                                        ng-click="auth.authenticate">
-                                {{}}
+                                        ng-click="auth.authenticate()">
+                                {{auth.newUser ? "Зарегистрироваться" : "Войти"}}
                                 </button>
                             </div>
                             <div class="col-md-6 offset-md-3">
                                 <button class="btn btn-success toggle-auth"
-                                        ng-click="">
-                                {{""}}
+                                        ng-click="(auth.newUser = (auth.newUser ? false : true))">
+                                {{auth.newUser ? "Вход" : "Регистрация"}}
                                 </button>
                             </div>
                         </form>
