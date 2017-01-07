@@ -2,28 +2,20 @@
 
     angular
         .module("Comments")
-        .controller("commentCtrl", ['$http', 'Backand', 'AuthorizationData', CommentController]);
+        .controller("commentCtrl", ['$http', 'Backand', 'AuthService', CommentController]);
 
-    function CommentController($http, Backand, CommentsInfo, AuthorizationData){
+    function CommentController($http, Backand, AuthService){
         var vm = this;
 
         var baseUrl = Backand.getApiUrl() + '/1/objects/';
         var objectName = 'comments';
 
-        vm.authData = AuthorizationData;
-
+        vm.currentUser = AuthService.currentUser;
+        
         vm.author = "";
         vm.text = "";
 
         vm.addComment = addComment;
-
-        vm.logIn = logIn;
-
-        function logIn() {
-            console.log(vm.authData.signedIn);
-            vm.authData.loggining();
-            console.log(vm.authData.signedIn);
-        }
 
         function addComment() {
           if(vm.author != "" && vm.text != ""){

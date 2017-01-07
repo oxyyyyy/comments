@@ -7,11 +7,7 @@
     function Auth(){
 
         var authObj = {
-            want2reg: false,
-            registered: false,
-            signedIn: false,
-            cnfrmBtn: "Вход",
-            tglBtn: "Регистрация",
+            newUser: false,
 
             loggingIn: logIn,
 

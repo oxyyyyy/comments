@@ -1,64 +1,68 @@
-(function(){
-    angular
-        .module("Comments")
-        .controller("authCtrl", ['$http', 'Backand', 'AuthorizationData', 'AuthService', AuthController]);
+'use strict';
+(function () {
+    /**
+     * @ngdoc function
+     * @name todoApp.controller:LoginCtrl
+     * @description
+     * # LoginCtrl
+     * Backand login control - need to implement in order to get the token for authentication
+     */
 
-        function AuthController($http, Backand, AuthorizationData, AuthService){
-            var vm = this;
+    angular.module('Comments')
+        .controller('authCtrl', ['AuthService', AuthController]);
 
-            var baseUrl = Backand.getApiUrl() + '/1/objects/';
-            var objectName = 'users';
+    function AuthController(AuthService) {
 
-            vm.userData = AuthorizationData;
+        var vm = this;
 
-            vm.authorizate = authorization;
-            vm.signIn = signIn;
-            vm.signUp = signUp;
+        vm.appName = AuthService.appName;
+        vm.error = "";
+        vm.socialProviders = AuthService.getSocialProviders();
+        vm.newUser = true;
 
+        vm.authenticate = function () {
+            vm.error = null;
+            vm.success = null;
 
-            function authorization(){
-                vm.success = null;
-                vm.error = null;
-                if(vm.userData.want2reg){
-                    vm.signIn();
-                } else{
-                    vm.signUp();
-                }
-            };
+            if (vm.newUser) {
+                vm.signup();
+            } else {
+                vm.signin();
+            }
+        };
 
-            function signUp() {
-                AuthService.signup(vm.username, vm.lastName, vm.email, vm.pass)
-                    .then(
-                    function (response) {
-                        //check status of the sign in
-                        switch (response.data.currentStatus) {
-                            case 1: // The user is ready to sign in
-                                vm.userData.loggingIn();
-                                break;
-                            case 2: //The system is now waiting for the user to respond a verification email.
-                                vm.success = 'Please check your email to continue';
-                                break;
-                            case 3: //The user signed up and is now waiting for an administrator approval.
-                                vm.success = 'Please wait for the administrator to approve the sign up';
-                                break;
-                        }
-                    }, showError
-                );
-            };
+        vm.signup = function () {
 
-            function signIn() {
-                AuthService.signin(vm.name, vm.pass)
-                    .then(
-                    function () {
-                        vm.userData.loggingIn();
-                    },
-                    showError
-                );
-            };
+            AuthService.signup(vm.firstName, vm.lastName, vm.email, vm.password)
+                .then(
+                function (response) {
+                    //check status of the sign in
+                    switch (response.data.currentStatus) {
+                        case 1: // The user is ready to sign in
+                            break;
+                        case 2: //The system is now waiting for the user to respond a verification email.
+                            vm.success = 'Please check your email to continue';
+                            break;
+                        case 3: //The user signed up and is now waiting for an administrator approval.
+                            vm.success = 'Please wait for the administrator to approve the sign up';
+                            break;
+                    }
+                }, showError
+            );
+        };
 
-            function showError(error) {
-                vm.error = error && error.data || error.error_description || 'Unknown error from server';
-            };
+        vm.signin = function () {
+            AuthService.signin(vm.email, vm.password)
+                .then(
+                showError
+            );
+        };
 
+        function showError(error) {
+            vm.error = error && error.data || error.error_description || 'Unknown error from server';
         }
+
+    }
+
+
 })();
