@@ -32,9 +32,9 @@
         	<!-- top search bar with start quiz button using bootstrap -->
             <div class="col-md-8">
                 <div class="commentBox"
-                     ng-show="!comment.authData.signedIn">
+                     ng-show="false">
                     <div class="form-group row">
-                        <p id="log_in_label">You are not logged in</p>
+                        <p>You are not logged in</p>
                         <button class="btn btn-success pull-right"
                                 ng-click="comment.authData.setAuth()"
                                 data-toggle="modal"
@@ -118,7 +118,7 @@
                 </div>
 
               <form class="well well-sm clearfix commentForm"
-                    ng-show="comment.authData.signedIn">
+                    ng-show="true">
                   <input
                       type="text"
                       placeholder="Your Name"
@@ -157,7 +157,7 @@
                 </button>
                   <h4>{{singleComment.author}}</h4>
                   <input  type="text"
-                          value={{singleComment.comment}}
+                          ng-model="singleComment.comment"
                           ng-disabled="!singleComment.editable">
               </div>
             </div>
@@ -174,8 +174,6 @@
     <script src="js/controllers/commentslist.js"></script>
     <script src="js/services/authservice.js"></script>
     <script src="js/factories/authinfo.js"></script>
-    <script src="js/factories/dataservice.js"></script>
-
 
 </body>
 </html>

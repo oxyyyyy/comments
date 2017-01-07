@@ -5,7 +5,9 @@
     function AuthService(Backand) {
 
         var vm = this;
-        self.currentUser = {};
+
+        vm.currentUser = {};
+        
         vm.logout = logout;
         vm.signin = signin;
         vm.signup = signup;
@@ -13,13 +15,11 @@
         loadUserDetails();
 
         function loadUserDetails() {
-
             return Backand.getUserDetails()
                 .then(function (data) {
                     vm.currentUser.details = data;
                     if(data !== null)
-                        vm.currentUser.name = data.userName;
-                        vm.currentUser.email = data.email;
+                        console.log(vm.currentUser.details);
                 });
 
         }
