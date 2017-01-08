@@ -15,7 +15,7 @@
                 .then(function (data) {
                     vm.currentUser.details = data;
                     if(data !== null)
-                        vm.currentUser.name = data.email;
+                        vm.currentUser.name = data.firstName;
                 });
 
         }
@@ -34,27 +34,29 @@
                 });
         };
 
-        vm.socialSignup = function (provider, email) {
-            return Backand.socialSignUp(provider, null, null, email)
+        vm.socialSignup = function (provider, username) {
+            return Backand.socialSignUp(provider, null, null, username)
                 .then(function (response) {
                   loadUserDetails();
                   return response;
                 });
         };
 
-        vm.signin = function (email, password) {
-            return Backand.signin(email, password)
+        vm.signin = function (username, password) {
+            return Backand.signin(username, password)
                 .then(function (response) {
                     loadUserDetails();
                     return response;
-                });
+                }, function (error) {
+      console.log(error);
+    });
         };
 
-        vm.signup = function (firstName, lastName, email, password) {
-            return Backand.signup(firstName, lastName, email, password, password)
+        vm.signup = function (firstName, lastName, username, password) {
+            return Backand.signup(firstName, lastName, username, password, password)
                 .then(function (signUpResponse) {
                     if (signUpResponse.data.currentStatus === 1) {
-                        return vm.signin(email, password)
+                        return vm.signin(username, password)
                             .then(function () {
                                 return signUpResponse;
                             });
@@ -62,15 +64,17 @@
                     } else {
                         return signUpResponse;
                     }
-                });
+                }, function (error) {
+                  console.log(error);
+            });
         };
 
         vm.changePassword = function (oldPassword, newPassword) {
             return Backand.changePassword(oldPassword, newPassword)
         };
 
-        vm.requestResetPassword = function (email) {
-            return Backand.requestResetPassword(email)
+        vm.requestResetPassword = function (username) {
+            return Backand.requestResetPassword(username)
         };
 
         vm.resetPassword = function (password, token) {

@@ -1,10 +1,10 @@
 (function(){
-  
+
      angular
         .module("Comments")
-        .controller("commentsListCtrl", ['$http', 'Backand', CommentListController]);
+        .controller("commentsListCtrl", ['$http', 'Backand', 'AuthService', CommentListController]);
 
-     function CommentListController($http, Backand){
+     function CommentListController($http, Backand, AuthService){
 
         var vm = this;
 
@@ -12,6 +12,8 @@
         var objectName = 'comments';
 
         vm.data = [];
+
+        vm.currentUser = AuthService.currentUser;
 
         vm.removeComment = deleteComment;
         vm.readComments = readCommentsList;

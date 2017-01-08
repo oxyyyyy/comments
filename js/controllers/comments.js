@@ -11,16 +11,14 @@
         var objectName = 'comments';
 
         vm.currentUser = AuthService.currentUser;
-        
-        vm.author = "";
+
         vm.text = "";
 
         vm.addComment = addComment;
 
         function addComment() {
-          if(vm.author != "" && vm.text != ""){
+          if(vm.currentUser.name != "" && vm.text != ""){
             sendToServer();
-            vm.author = "";
             vm.text = "";
           }
         };
@@ -30,7 +28,7 @@
                 method: 'POST',
                 url : baseUrl + objectName,
                 data: {
-                    author: vm.author,
+                    author: vm.currentUser.name,
                     comment: vm.text
                 },
                 params: {

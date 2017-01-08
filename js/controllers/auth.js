@@ -17,7 +17,6 @@
 
         vm.appName = AuthService.appName;
         vm.error = "";
-        vm.socialProviders = AuthService.getSocialProviders();
         vm.newUser = true;
 
         vm.authenticate = function () {
@@ -33,7 +32,7 @@
 
         vm.signup = function () {
 
-            AuthService.signup(vm.firstName, vm.lastName, vm.email, vm.password)
+            AuthService.signup(vm.firstName, "", vm.username, vm.password)
                 .then(
                 function (response) {
                     //check status of the sign in
@@ -52,7 +51,7 @@
         };
 
         vm.signin = function () {
-            AuthService.signin(vm.email, vm.password)
+            AuthService.signin(vm.username, vm.password)
                 .then(
                 showError
             );
