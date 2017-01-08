@@ -133,7 +133,7 @@
         <div ng-controller="commentsListCtrl as list"
              ng-init="list.readComments()">
             <div class="row">
-              <div class="col-sm-6 commentBox" ng-repeat="singleComment in list.data"
+              <div class="col-sm-6 commentBox" ng-repeat="singleComment in list.data | orderBy:'-id'"
                                                ng-init="list.commentOnCreation()">
                 <button class="btn btn-danger pull-right"
                         ng-show="(list.currentUser.name == singleComment.author)"

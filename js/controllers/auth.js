@@ -36,6 +36,7 @@
                 .then(
                 function (response) {
                     //check status of the sign in
+                    console.log(response.data.currentStatus)
                     switch (response.data.currentStatus) {
                         case 1: // The user is ready to sign in
                             break;
