@@ -15,6 +15,7 @@
         vm.text = "";
 
         vm.addComment = addComment;
+        vm.logout = AuthService.logout;
 
         function addComment() {
           if(vm.currentUser.name != "" && vm.text != ""){

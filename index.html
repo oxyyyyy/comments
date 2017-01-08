@@ -27,8 +27,9 @@
                     {{comment.currentUser.name || "Guest"}}
                     <span class="pull-right">
                         <button data-toggle="modal"
-                                data-target=".logIn">
-                        Sign In/Up
+                                data-target=".authBox"
+                                ng-click="comment.logout()">
+                        {{comment.currentUser.name ? "Log Out" : "Sign In/Up"}}
                         </button>
                     </span>
                 </div>
@@ -39,9 +40,8 @@
                     <div class="form-group row">
                         <p>Вы не авторизированы</p>
                         <button class="btn btn-success pull-right"
-                                ng-click=""
                                 data-toggle="modal"
-                                data-target=".logIn">
+                                data-target=".authBox">
                             <!-- ng-click="comment.logIn()"> -->
                         Войти
                         </button>
@@ -67,7 +67,7 @@
             </div>
         </div>
 
-        <div class="modal logIn"
+        <div class="modal authBox"
              ng-controller="authCtrl as auth">
             <div class="modal-dialog">
                 <div class="modal-content">

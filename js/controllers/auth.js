@@ -48,6 +48,9 @@
                     }
                 }, showError
             );
+            vm.firstName = "";
+            vm.username = "";
+            vm.password = "";
         };
 
         vm.signin = function () {
@@ -55,6 +58,9 @@
                 .then(
                 showError
             );
+            vm.firstName = "";
+            vm.username = "";
+            vm.password = "";
         };
 
         function showError(error) {
