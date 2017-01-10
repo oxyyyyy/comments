@@ -1,2 +1,2 @@
 # Comments
-comment module / clean code
+comment module
