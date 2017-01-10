@@ -15,3 +15,9 @@
   height: auto;
   margin: 0.1em;
 }
+
+.header{
+  border-top: 1px solid silver;
+  border-bottom: 1px solid silver;
+  margin: 1em 0;
+}

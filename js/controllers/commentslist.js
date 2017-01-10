@@ -1,18 +1,19 @@
 (function(){
-    /*
-     * Creating List controller and attaching it to the main turtleFacts module
-     */
+
      angular
         .module("Comments")
-        .controller("commentsListCtrl", ['$http', 'Backand', CommentListController]);
+        .controller("commentsListCtrl", ['$http', 'Backand', 'AuthService', CommentListController]);
 
-     function CommentListController($http, Backand){
+     function CommentListController($http, Backand, AuthService){
 
         var vm = this;
+
         var baseUrl = Backand.getApiUrl() + '/1/objects/';
         var objectName = 'comments';
 
         vm.data = [];
+
+        vm.currentUser = AuthService.currentUser;
 
         vm.removeComment = deleteComment;
         vm.readComments = readCommentsList;
@@ -21,7 +22,6 @@
         vm.saveUpdatedComment = updateComment;
 
         Backand.on('comments_updated', function (data) {
-            console.log(data);
             vm.readComments();
         });
 
@@ -40,33 +40,30 @@
             vm.data.editable = false;
         };
 
-        function editComment(comment){
-            console.log('to change');
-            comment.editable = true;
+        function editComment(singleComment){
+            singleComment.editable = true;
         };
 
-        function updateComment(comment) {
-            console.log('updatedInServer');
-            comment.editable = false;
+        function updateComment(singleComment) {
+            singleComment.editable = false;
             return $http({
                 method: 'PUT',
                 data: {
-                    author: vm.author,
-                    comment: vm.text
+                    author: singleComment.author,
+                    comment: singleComment.comment
                 },
-                url: baseUrl + objectName + '/' + comment.id
+                url: baseUrl + objectName + '/' + singleComment.id
             }).then(function (response) {
                 return response.data;
             });
         }
 
-        function deleteComment(comment) {
+        function deleteComment(singleComment) {
             console.log('deleted');
             return $http({
                 method: 'DELETE',
-                url : baseUrl + objectName + '/' + comment.id
+                url : baseUrl + objectName + '/' + singleComment.id
             }).then(function(response) {
-                // vm.readComments();
                 return response.data;
             });
         };
