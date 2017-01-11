@@ -25,6 +25,10 @@
             vm.readComments();
         });
 
+        function errHandler(err) {
+            console.error(err);
+        }
+
         function readCommentsList() {
             return $http({
                 method: 'GET',
@@ -55,7 +59,7 @@
                 url: baseUrl + objectName + '/' + singleComment.id
             }).then(function (response) {
                 return response.data;
-            });
+            }, errHandler);
         }
 
         function deleteComment(singleComment) {
@@ -65,7 +69,7 @@
                 url : baseUrl + objectName + '/' + singleComment.id
             }).then(function(response) {
                 return response.data;
-            });
+            }, errHandler);
         };
     };
 })();

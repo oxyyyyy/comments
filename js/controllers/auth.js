@@ -16,11 +16,9 @@
         var vm = this;
 
         vm.appName = AuthService.appName;
-        vm.error = "";
         vm.newUser = true;
 
         vm.authenticate = function () {
-            vm.error = null;
             vm.success = null;
 
             if (vm.newUser) {
@@ -36,17 +34,7 @@
                 .then(
                 function (response) {
                     //check status of the sign in
-                    console.log(response.data.currentStatus)
-                    switch (response.data.currentStatus) {
-                        case 1: // The user is ready to sign in
-                            break;
-                        case 2: //The system is now waiting for the user to respond a verification email.
-                            vm.success = 'Please check your email to continue';
-                            break;
-                        case 3: //The user signed up and is now waiting for an administrator approval.
-                            vm.success = 'Please wait for the administrator to approve the sign up';
-                            break;
-                    }
+                    console.log(response)
                 }, showError
             );
             vm.firstName = "";
@@ -65,7 +53,7 @@
         };
 
         function showError(error) {
-            vm.error = error && error.data || error.error_description || 'Unknown error from server';
+            console.error(error);
         }
 
     }

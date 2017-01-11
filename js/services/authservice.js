@@ -55,7 +55,7 @@
         vm.signup = function (firstName, lastName, username, password) {
             return Backand.signup(firstName, lastName, username, password, password)
                 .then(function (signUpResponse) {
-                    if (signUpResponse.data.currentStatus === 1) {
+                    if (signUpResponse) {
                         return vm.signin(username, password)
                             .then(function () {
                                 return signUpResponse;
