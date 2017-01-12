@@ -12,6 +12,7 @@
         var objectName = 'comments';
 
         vm.data = [];
+        vm.error = "";
 
         vm.currentUser = AuthService.currentUser;
 
@@ -27,6 +28,7 @@
 
         function errHandler(err) {
             console.error(err);
+            vm.error = err.data;
         }
 
         function readCommentsList() {
@@ -41,6 +43,7 @@
         };
 
         function initComment() {
+            vm.error = null;
             vm.data.editable = false;
         };
 

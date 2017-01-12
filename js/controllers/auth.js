@@ -17,9 +17,10 @@
 
         vm.appName = AuthService.appName;
         vm.newUser = true;
+        vm.error = '';
 
         vm.authenticate = function () {
-            vm.success = null;
+            vm.error = null;
 
             if (vm.newUser) {
                 vm.signup();
@@ -35,8 +36,9 @@
                 function (response) {
                     //check status of the sign in
                     console.log(response)
-                }, showError
-            );
+                    $('.authBox').modal('hide');
+                }, showError);
+
             vm.firstName = "";
             vm.username = "";
             vm.password = "";
@@ -44,9 +46,10 @@
 
         vm.signin = function () {
             AuthService.signin(vm.username, vm.password)
-                .then(
-                showError
-            );
+                .then(function (){
+                    $('.authBox').modal('hide');
+                }, showError);
+
             vm.firstName = "";
             vm.username = "";
             vm.password = "";
@@ -54,6 +57,7 @@
 
         function showError(error) {
             console.error(error);
+            vm.error = error.data;
         }
 
     }

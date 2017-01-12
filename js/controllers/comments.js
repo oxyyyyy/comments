@@ -15,13 +15,14 @@
         vm.text = "";
 
         vm.addComment = addComment;
+        vm.showAuth = showAuth;
         vm.logout = AuthService.logout;
 
         function addComment() {
-          if(vm.currentUser.name != "" && vm.text != ""){
-            sendToServer();
-            vm.text = "";
-          }
+            if(vm.currentUser.name != "" && vm.text != ""){
+                sendToServer();
+                vm.text = "";
+            }
         };
 
         function sendToServer() {
@@ -39,5 +40,9 @@
                 return response.data;
             });
         };
+
+        function showAuth() {
+            $('.authBox').modal('show');
+        }
     }
 })();
