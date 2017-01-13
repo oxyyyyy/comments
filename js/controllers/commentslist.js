@@ -14,6 +14,7 @@
         vm.data = [];
         vm.error = "";
         vm.commentsOnPage = 4;
+        vm.commentsDisplayIndex = 0;
 
         vm.currentUser = AuthService.currentUser;
 
@@ -22,6 +23,8 @@
         vm.commentOnCreation = initComment;
         vm.allowUpdate = editComment;
         vm.saveUpdatedComment = updateComment;
+
+        vm.nextComments = nextComments;
 
         Backand.on('comments_updated', function (data) {
             vm.readComments();
@@ -75,5 +78,16 @@
                 return response.data;
             }, errHandler);
         };
+
+        function nextComments(direction) {
+            if(direction>0) {
+                if((vm.data.length / vm.commentsOnPage) > vm.commentsDisplayIndex+1)
+                    vm.commentsDisplayIndex++;
+            }
+            else {
+                if (vm.commentsDisplayIndex > 0)
+                    vm.commentsDisplayIndex--;
+            }
+        }
     };
 })();
