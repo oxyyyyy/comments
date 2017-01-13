@@ -150,7 +150,7 @@
                         <input  type="text"
                               ng-model="singleComment.comment"
                               ng-disabled="!singleComment.editable">
-                        <h6>{{singleComment.date}}</h6>
+                        <h6>{{singleComment.updated ? "Updated on " : "Posted on "}}{{singleComment.date}}</h6>
                 </div>
             </div>
             <div class="loadMore">
