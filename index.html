@@ -129,7 +129,8 @@
             </div>
             <div class="row">
                 <div class="row commentBox" ng-repeat="singleComment in list.data | orderBy:'-id'"
-                                               ng-init="list.commentOnCreation()">
+                                            ng-if="($index / 3) == 1"
+                                            ng-init="list.commentOnCreation()">
                     <button class="btn btn-danger pull-right"
                             ng-show="(list.currentUser.details.userId == singleComment.created_by)"
                             ng-click="list.removeComment(singleComment)">
@@ -149,7 +150,11 @@
                         <input  type="text"
                               ng-model="singleComment.comment"
                               ng-disabled="!singleComment.editable">
+                        <h6>{{singleComment.date}}</h6>
                 </div>
+            </div>
+            <div class="loadMore">
+                <button type="button" class="btn">LOAD MORE</button>
             </div>
         </div>
 

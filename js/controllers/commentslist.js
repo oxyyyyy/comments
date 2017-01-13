@@ -13,6 +13,7 @@
 
         vm.data = [];
         vm.error = "";
+        vm.commentsOnPage = 4;
 
         vm.currentUser = AuthService.currentUser;
 
