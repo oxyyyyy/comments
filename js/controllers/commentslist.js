@@ -24,6 +24,8 @@
         vm.allowUpdate = editComment;
         vm.saveUpdatedComment = updateComment;
 
+        vm.validateDate = validateDate;
+
         vm.nextComments = nextComments;
 
         Backand.on('comments_updated', function (data) {
@@ -33,6 +35,9 @@
         function errHandler(err) {
             console.error(err);
             vm.error = err.data;
+            setTimeout(function() {
+                vm.error = null;
+            },2000);
         }
 
         function readCommentsList() {
@@ -70,7 +75,6 @@
         }
 
         function deleteComment(singleComment) {
-            console.log('deleted');
             return $http({
                 method: 'DELETE',
                 url : baseUrl + objectName + '/' + singleComment.id
@@ -88,6 +92,12 @@
                 if (vm.commentsDisplayIndex > 0)
                     vm.commentsDisplayIndex--;
             }
+        }
+
+        function validateDate(date) {
+            var newDate = new Date(date.toString());
+            newDate.setTime (newDate.getTime() - newDate.getTimezoneOffset()*60*1000 );
+            return newDate.toString().slice(0,21);
         }
     };
 })();

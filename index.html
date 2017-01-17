@@ -60,9 +60,14 @@
                     </button>
                     <textarea class = "comment form-control"
                               ng-model="comment.text"
+                              ng-focus="comment.error = null"
                               rows=5>
                     </textarea>
                 </form>
+                <div class="errorBox row"
+                     ng-show="comment.error">
+                    {{comment.error}}
+                </div>
             </div>
         </div>
 
@@ -74,7 +79,8 @@
                         <h2>Авторизация</h2>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
+                        <div class=" errorBox row"
+                             ng-show="auth.error">
                             {{auth.error}}
                         </div>
                         <form class="registration_form">
@@ -123,47 +129,49 @@
 
         <div ng-controller="commentsListCtrl as list"
              ng-init="list.readComments()">
-            <div class="errorMsgBox row"
-                 ng-show="list.error != ''">
-                {{list.error}}
-            </div>
-            <div class="row">
-                <div class="row commentBox" ng-repeat="singleComment in list.data | orderBy:'-id'"
-                                            ng-show="(($index / list.commentsOnPage) >= list.commentsDisplayIndex) && (($index / list.commentsOnPage) < list.commentsDisplayIndex + 1)"
-                                            ng-init="list.commentOnCreation()">
-                    <button class="btn btn-danger pull-right"
-                            ng-show="(list.currentUser.details.userId == singleComment.created_by)"
-                            ng-click="list.removeComment(singleComment)">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </button>
-                    <button class="btn btn-info pull-right"
-                            ng-click="list.allowUpdate(singleComment)"
-                            ng-show="!singleComment.editable && (list.currentUser.details.userId == singleComment.created_by)">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                    </button>
-                    <button class="btn btn-success pull-right"
-                            ng-click="list.saveUpdatedComment(singleComment)"
-                            ng-show="singleComment.editable && (list.currentUser.details.userId == singleComment.created_by)">
-                        <span class="glyphicon glyphicon-floppy-disk"></span>
-                    </button>
-                        <h4>{{singleComment.author}}</h4>
-                        <input  type="text"
-                              ng-model="singleComment.comment"
-                              ng-disabled="!singleComment.editable">
-                        <h6>{{singleComment.updated ? "Updated on " : "Posted on "}}{{singleComment.date}}</h6>
+            <div class="col-md-8">
+                <div class="errorBox row"
+                     ng-show="list.error">
+                    {{list.error}}
                 </div>
-            </div>
-            <div class="loadMore">
-                <button type="button" class="btn"
-                        ng-show="(list.data.length / list.commentsOnPage) > list.commentsDisplayIndex+1"
-                        ng-click="list.nextComments(1)">
-                    LOAD MORE
-                </button>
-                <button type="button" class="btn"
-                        ng-show="list.commentsDisplayIndex != 0"
-                        ng-click="list.nextComments(-1)">
-                    LOAD LESS
-                </button>
+                <div class="row">
+                    <div class="row commentBox" ng-repeat="singleComment in list.data | orderBy:'-id'"
+                                                ng-show="(($index / list.commentsOnPage) >= list.commentsDisplayIndex) && (($index / list.commentsOnPage) < list.commentsDisplayIndex + 1)"
+                                                ng-init="list.commentOnCreation()">
+                        <button class="btn btn-danger pull-right"
+                                ng-show="(list.currentUser.details.userId == singleComment.created_by)"
+                                ng-click="list.removeComment(singleComment)">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                        <button class="btn btn-info pull-right"
+                                ng-click="list.allowUpdate(singleComment)"
+                                ng-show="!singleComment.editable && (list.currentUser.details.userId == singleComment.created_by)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                        <button class="btn btn-success pull-right"
+                                ng-click="list.saveUpdatedComment(singleComment)"
+                                ng-show="singleComment.editable && (list.currentUser.details.userId == singleComment.created_by)">
+                            <span class="glyphicon glyphicon-floppy-disk"></span>
+                        </button>
+                            <h4>{{singleComment.author}}</h4>
+                            <input  type="text"
+                                  ng-model="singleComment.comment"
+                                  ng-disabled="!singleComment.editable">
+                            <h6>{{singleComment.updated ? "Updated on " : "Posted on "}}{{list.validateDate(singleComment.date)}}</h6>
+                    </div>
+                </div>
+                <div class="loadMore">
+                    <button type="button" class="btn"
+                            ng-show="list.commentsDisplayIndex != 0"
+                            ng-click="list.nextComments(-1)">
+                        LOAD LESS
+                    </button>
+                    <button type="button" class="btn"
+                            ng-show="(list.data.length / list.commentsOnPage) > list.commentsDisplayIndex+1"
+                            ng-click="list.nextComments(1)">
+                        LOAD MORE
+                    </button>
+                </div>
             </div>
         </div>
 

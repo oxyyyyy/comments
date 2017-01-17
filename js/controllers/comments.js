@@ -14,6 +14,8 @@
 
         vm.text = "";
 
+        vm.erroe = "";
+
         vm.addComment = addComment;
         vm.showAuth = showAuth;
         vm.logout = AuthService.logout;
@@ -22,6 +24,8 @@
             if(vm.currentUser.name != "" && vm.text != ""){
                 sendToServer();
                 vm.text = "";
+            } else {
+                vm.error = "Пустой комментарий";
             }
         };
 

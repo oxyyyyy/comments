@@ -21,3 +21,10 @@
   border-bottom: 1px solid silver;
   margin: 1em 0;
 }
+
+.errorBox{
+  border: 1px solid red;
+  border-radius: 15px;
+  font-size: 1em;
+  margin: 1em 0;
+}

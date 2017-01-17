@@ -66,12 +66,12 @@ COMMENT.onUpdateDuring
 
         if (userProfile.role != "Admin"){
             if (!dbRow.created_by){
-                throw new Error('Todo with no creator can\'t be changed.');
+                throw new Error('Комментарий без автора не может быть изменен.');
                 return {};
             }
 
             if (dbRow.created_by != userProfile.userId) {
-                throw new Error('You can only change your own todo.');
+                throw new Error('Вы не являетесь автором этого комментария');
                 return {};
             }
         }
@@ -92,10 +92,10 @@ COMMENT.onDeleteDuring
             return {};
 
          if (!dbRow.created_by)
-            throw new Error(typeof(userProfile.userId)+ " " + userProfile.userId);
+            throw new Error('Комментарий без автора не может быть удален.');
 
         if (dbRow.created_by != userProfile.userId)
-            throw new Error('You can only delete your own todo.');
+            throw new Error('Вы не являетесь автором этого комментария');
 
         return {};
     }
