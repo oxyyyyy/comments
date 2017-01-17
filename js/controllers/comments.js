@@ -12,20 +12,29 @@
 
         vm.currentUser = AuthService.currentUser;
 
+        vm.anonymous = false;
+        vm.author = vm.currentUser.name || "";
         vm.text = "";
 
-        vm.erroe = "";
+        vm.error = "";
 
+        vm.initComment = initComment;
         vm.addComment = addComment;
         vm.showAuth = showAuth;
         vm.logout = AuthService.logout;
 
+        function initComment() {
+            vm.text = "";
+            vm.author = "";
+        }
+
         function addComment() {
             if(vm.currentUser.name != "" && vm.text != ""){
                 sendToServer();
-                vm.text = "";
+                vm.initComment();
+                vm.anonymous = false;
             } else {
-                vm.error = "Пустой комментарий";
+                errHandler("Пустой комментарий");
             }
         };
 
@@ -34,7 +43,7 @@
                 method: 'POST',
                 url : baseUrl + objectName,
                 data: {
-                    author: vm.currentUser.name,
+                    author: vm.currentUser.name || vm.author,
                     comment: vm.text
                 },
                 params: {
@@ -42,11 +51,19 @@
                 }
             }).then(function(response) {
                 return response.data;
-            });
+            }, errHandler);
         };
 
         function showAuth() {
             $('.authBox').modal('show');
-        }
+        };
+
+        function errHandler(err) {
+            console.error(err);
+            vm.error = err.data || err;
+            setTimeout(function() {
+                vm.error = null;
+            },2000);
+        };
     }
 })();

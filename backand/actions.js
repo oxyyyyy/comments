@@ -36,7 +36,10 @@ COMMENT.onCreateBefore
         userInput.updated = false;
 
         if (userProfile.role == "Admin")
-          return {};
+            return {};
+
+        if (userProfile.firstName != userInput.author)
+            return{};
 
         userInput.created_by = userProfile.userId;
 
@@ -46,8 +49,8 @@ COMMENT.onCreateBefore
 COMMENT.onCreateAfter
     'use strict';
     function backandCallback(userInput, dbRow, parameters, userProfile) {
-      socket.emitAll("comments_updated", userInput);
-      return {}
+        socket.emitAll("comments_updated", userInput);
+        return {}
     }
 
 COMMENT.onUpdateBefore
@@ -81,8 +84,8 @@ COMMENT.onUpdateDuring
 COMMENT.onUpdateAfter
     'use strict';
     function backandCallback(userInput, dbRow, parameters, userProfile) {
-      socket.emitAll("comments_updated", userInput);
-      return {}
+        socket.emitAll("comments_updated", userInput);
+        return {}
     }
 
 COMMENT.onDeleteDuring
@@ -103,6 +106,6 @@ COMMENT.onDeleteDuring
 COMMENT.onDeleteAfter
     'use strict';
     function backandCallback(userInput, dbRow, parameters, userProfile) {
-      socket.emitAll("comments_updated", userInput);
-      return {}
+        socket.emitAll("comments_updated", userInput);
+        return {}
     }

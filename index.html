@@ -42,25 +42,36 @@
                         <button class="btn btn-success pull-right"
                                 data-toggle="modal"
                                 data-target=".authBox">
-                            <!-- ng-click="comment.logIn()"> -->
                         Войти
                         </button>
                     </div>
                 </div>
 
                 <form class="well well-sm clearfix commentForm">
+                    <div ng-show="comment.currentUser.name"
+                         class="form-control">
+                         {{comment.currentUser.name}}
+                    </div>
+                           <!-- ??? -->
                     <input type="text"
                            placeholder="Your Name"
+                           ng-show="!comment.currentUser.name"
                            class="form-control"
-                           ng-model="comment.currentUser.name"
-                           ng-disabled="true">
+                           ng-model="comment.author"
+                           ng-disabled="!comment.anonymous">
+                           <!-- ??? -->
+                    <input type="checkbox" class="anonymousCheck"
+                                           ng-show="!comment.currentUser.name"
+                                           ng-model="comment.anonymous"
+                                           ng-click="comment.initComment()">
                     <button class="btn btn-warning pull-right"
-                            ng-click="comment.currentUser.name ? comment.addComment() : comment.showAuth()">
+                            ng-click="(comment.currentUser.name || comment.anonymous) ? comment.addComment() : comment.showAuth()">
                         <strong>Post comment</strong>
                     </button>
                     <textarea class = "comment form-control"
                               ng-model="comment.text"
                               ng-focus="comment.error = null"
+                              ng-disabled="!(comment.currentUser.name || comment.anonymous)"
                               rows=5>
                     </textarea>
                 </form>
