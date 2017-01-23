@@ -6,6 +6,21 @@
 
         var vm = this;
         vm.currentUser = {};
+        vm.newUser = false;
+
+        vm.authError = null;
+
+        vm.initAuth = initAuth;
+        vm.showAuth = showAuth;
+
+        function initAuth() {
+            vm.newUser = false;
+        }
+
+        function showAuth() {
+            vm.initAuth();
+            $('.authBox').modal('show');
+        };
 
         loadUserDetails();
 
@@ -48,24 +63,27 @@
                     loadUserDetails();
                     return response;
                 }, function (error) {
-      console.log(error);
-    });
+                    console.log(error);
+                    vm.authError = error.error_description;
+                });
         };
 
         vm.signup = function (firstName, lastName, username, password) {
             return Backand.signup(firstName, lastName, username, password, password)
                 .then(function (signUpResponse) {
                     if (signUpResponse) {
+                        console.log(signUpResponse);
                         return vm.signin(username, password)
                             .then(function () {
                                 return signUpResponse;
                             });
-
                     } else {
+                        console.log(signUpResponse);
                         return signUpResponse;
                     }
                 }, function (error) {
                   console.log(error);
+                  vm.authError = error.error_description || error.data;
             });
         };
 

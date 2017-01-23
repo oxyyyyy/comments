@@ -20,7 +20,8 @@
 
         vm.initComment = initComment;
         vm.addComment = addComment;
-        vm.showAuth = showAuth;
+
+        vm.showAuth = AuthService.showAuth;
         vm.logout = AuthService.logout;
 
         function initComment() {
@@ -44,7 +45,8 @@
                 url : baseUrl + objectName,
                 data: {
                     author: vm.currentUser.name || vm.author,
-                    comment: vm.text
+                    comment: vm.text,
+                    anonymous: vm.anonymous
                 },
                 params: {
                     returnObject: true
@@ -52,10 +54,6 @@
             }).then(function(response) {
                 return response.data;
             }, errHandler);
-        };
-
-        function showAuth() {
-            $('.authBox').modal('show');
         };
 
         function errHandler(err) {

@@ -1,12 +1,5 @@
 'use strict';
 (function () {
-    /**
-     * @ngdoc function
-     * @name todoApp.controller:LoginCtrl
-     * @description
-     * # LoginCtrl
-     * Backand login control - need to implement in order to get the token for authentication
-     */
 
     angular.module('Comments')
         .controller('authCtrl', ['AuthService', AuthController]);
@@ -15,14 +8,14 @@
 
         var vm = this;
 
+        vm.AuthService = AuthService;
         vm.appName = AuthService.appName;
-        vm.newUser = true;
         vm.error = '';
 
         vm.authenticate = function () {
-            vm.error = null;
+            vm.AuthService.authError = null;
 
-            if (vm.newUser) {
+            if (vm.AuthService.newUser) {
                 vm.signup();
             } else {
                 vm.signin();
@@ -36,28 +29,30 @@
                 function (response) {
                     //check status of the sign in
                     console.log(response)
-                    $('.authBox').modal('hide');
+                    if(!vm.AuthService.authError) {
+                        $('.authBox').modal('hide');
+                        vm.firstName = "";
+                        vm.username = "";
+                        vm.password = "";
+                    }
                 }, showError);
-
-            vm.firstName = "";
-            vm.username = "";
-            vm.password = "";
         };
 
         vm.signin = function () {
             AuthService.signin(vm.username, vm.password)
                 .then(function (){
-                    $('.authBox').modal('hide');
+                    if(!vm.AuthService.authError) {
+                        $('.authBox').modal('hide');
+                        vm.firstName = "";
+                        vm.username = "";
+                    }
                 }, showError);
-
-            vm.firstName = "";
-            vm.username = "";
             vm.password = "";
         };
 
         function showError(error) {
             console.error(error);
-            vm.error = error.data;
+            vm.AuthService.authError = error.error_description;
         }
 
     }

@@ -26,9 +26,7 @@
                 <div>
                     {{comment.currentUser.name || "Guest"}}
                     <span class="pull-right">
-                        <button data-toggle="modal"
-                                data-target=".authBox"
-                                ng-click="comment.logout()">
+                        <button ng-click="comment.currentUser.name ? comment.logout() : comment.showAuth()">
                         {{comment.currentUser.name ? "Log Out" : "Sign In/Up"}}
                         </button>
                     </span>
@@ -88,11 +86,15 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2>Авторизация</h2>
+                        <button class=" pull-right"
+                                data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
                     </div>
                     <div class="modal-body">
                         <div class=" errorBox row"
-                             ng-show="auth.error">
-                            {{auth.error}}
+                             ng-show="auth.AuthService.authError">
+                            {{auth.AuthService.authError}}
                         </div>
                         <form class="registration_form">
                             <div class="form-group row">
@@ -104,7 +106,7 @@
                                 </div>
                             </div>
                             <div class="form-group row"
-                                 ng-show="auth.newUser">
+                                 ng-show="auth.AuthService.newUser">
                                 <label for="name" class="col-md-2 offset-md-3 col-form-label">Name</label>
                                 <div class="col-md-4">
                                     <input class="form-control"
@@ -123,13 +125,13 @@
                             <div class="col-md-6 offset-md-3">
                                 <button class="btn btn-primary confirm-auth"
                                         ng-click="auth.authenticate()">
-                                {{auth.newUser ? "Зарегистрироваться" : "Войти"}}
+                                {{auth.AuthService.newUser ? "Зарегистрироваться" : "Войти"}}
                                 </button>
                             </div>
                         </form>
                         <div class="col-md-6 offset-md-3">
                             <button class="btn btn-success toggle-auth"
-                                    ng-click="(auth.newUser = (auth.newUser ? false : true))">
+                                    ng-click="(auth.AuthService.newUser = (auth.AuthService.newUser ? false : true))">
                             {{auth.newUser ? "Вход" : "Регистрация"}}
                             </button>
                         </div>
@@ -164,7 +166,12 @@
                                 ng-show="singleComment.editable && (list.currentUser.details.userId == singleComment.created_by)">
                             <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
-                            <h4>{{singleComment.author}}</h4>
+                            <h4>
+                                {{singleComment.author}}
+                                <span ng-show="singleComment.anonymous" style="font-size:0.6em">
+                                    Аноним
+                                </span>
+                            </h4>
                             <input  type="text"
                                   ng-model="singleComment.comment"
                                   ng-disabled="!singleComment.editable">
