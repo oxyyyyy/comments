@@ -4,7 +4,7 @@
     width: auto;
 }
 
-.comment{
+.commentText{
   width: 100%;
   height: auto;
   resize: none;
@@ -20,6 +20,23 @@
   border-top: 1px solid silver;
   border-bottom: 1px solid silver;
   margin: 1em 0;
+}
+
+.headerAuthBtn{
+  background: none;
+  color: none;
+  border: none;
+}
+
+.commentPostedText{
+  /*background: none;*/
+  resize: none;
+  border: 1px solid green;
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: pre-line;
+  height: auto;
+  width: auto;
 }
 
 .errorMsgBox{

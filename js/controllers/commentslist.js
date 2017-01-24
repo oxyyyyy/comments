@@ -26,6 +26,8 @@
 
         vm.validateDate = validateDate;
 
+        vm.setRows = textareaSetSize;
+
         vm.nextComments = nextComments;
 
         Backand.on('comments_updated', function (data) {
@@ -96,8 +98,25 @@
 
         function validateDate(date) {
             var newDate = new Date(date.toString());
-            newDate.setTime (newDate.getTime() - newDate.getTimezoneOffset()*60*1000 );
+            //newDate.setTime (newDate.getTime() - newDate.getTimezoneOffset()*60*1000 );
             return newDate.toString().slice(0,21);
+        }
+
+        function textareaSetSize(singleComment) {
+            var comments = $('.commentPostedText');
+            console.log(comments);
+            for(var i = 0; i < comments.length; i++){
+                var pos = 0;
+                var rows = 1;
+                while (true) {
+                    var foundpos = (singleComment.comment).indexOf('\n', pos);
+                    if (foundpos == -1) break;
+                    rows += 1;
+                    pos = foundpos + 1;
+                }
+                comments[i].rows = rows;
+                console.log(rows);
+            }
         }
     };
 })();

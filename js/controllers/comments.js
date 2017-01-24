@@ -18,6 +18,10 @@
 
         vm.error = "";
 
+        vm.clearError = clearError;
+
+        vm.setAnonymousPost = setAnonymousPost;
+
         vm.initComment = initComment;
         vm.addComment = addComment;
 
@@ -29,6 +33,13 @@
             vm.author = "";
         }
 
+        function clearError() {
+            vm.error = null;
+        }
+
+        function setAnonymousPost() {
+            vm.anonymous = true;
+        }
         function addComment() {
             if(vm.currentUser.name != "" && vm.text != ""){
                 sendToServer();

@@ -38,9 +38,9 @@ COMMENT.onCreateBefore
         if (userProfile.role == "Admin")
             return {};
 
-        if (userProfile.firstName != userInput.author)
-            return{};
-
+        if (userInput.anonymous)
+            return {};
+            
         userInput.created_by = userProfile.userId;
 
         return {};
