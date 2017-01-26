@@ -14,8 +14,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.2/angular.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <script src="js/backand.min.js"></script>
     <script src="https://socket.backand.com/socket.io/socket.io.js"></script>
+
+    <script src="lib/ui-bootstrap-tpls-2.4.0.min.js"></script>
+    <script src="lib/backand.min.js"></script>
+
 
 </head>
 <body>
@@ -48,12 +51,35 @@
                                    ng-model="comment.author">
                                    <!-- ??? -->
                             <input type="checkbox" class="anonymousCheck"
-                                                   data-original-title="Оставляя анонимный комментарий, вы теряете возможность 'фидбека'"
                                                    ng-show="!comment.currentUser.name"
-                                                   ng-change=""
                                                    ng-model="comment.anonymous">
                             <label for="anonymousCheck"
-                                   ng-show="!comment.currentUser.name">Анонимно</label>
+                                   class="label label-warning"
+                                   uib-popover-template="comment.popoverOnAnon.templateUrl"
+                                   popover-placement="right"
+                                   popover-is-open="comment.anonymous && comment.popoverOnAnon.isOpen"
+                                   ng-show="!comment.currentUser.name">
+                                Анонимно
+                            </label>
+
+                            <script type="text/ng-template"
+                                    id="myPopoverTemplate.html">
+                                <div>
+                                    <button class="pull-right"
+                                            ng-click="comment.popoverOnAnon.close()">
+                                          <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                    Оставляя анонимный комменатарий вы теряете возможность его 'администрирования'
+                                    <p>
+                                        <button class="pull-right"
+                                                ng-click="comment.popoverOnAnon.auth()">
+                                            Авторизироваться
+                                        </button>
+                                    </p>
+                                </div>
+                            </script>
+
+
                             <button class="btn btn-warning pull-right postBtn"
                                     ng-click="(comment.currentUser.name || comment.anonymous) ? comment.addComment() : comment.showAuth()">
                                 <strong>Оставить комментарий</strong>
@@ -70,7 +96,8 @@
                                   rows="{{comment.currentUser.name ? 4 : 1}}">
                         </textarea>
                     </form>
-                    <div class="errorMsgBox row"
+                    <div uib-alert
+                         class="alert-danger"
                          ng-show="comment.error">
                         {{comment.error}}
                     </div>
@@ -89,7 +116,8 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div class=" errorBox row"
+                            <div uib-alert
+                                 class="alert-danger"
                                  ng-show="auth.AuthService.authError">
                                 {{auth.AuthService.authError}}
                             </div>
@@ -139,7 +167,8 @@
 
             <div ng-controller="commentsListCtrl as list"
                  ng-init="list.readComments()">
-                <div class="errorBox row"
+                <div uib-alert
+                     class="alert-danger"
                      ng-show="list.error">
                     {{list.error}}
                 </div>
@@ -172,6 +201,9 @@
                              ng-model="singleComment.comment">
                         </div>
                         <h6>{{singleComment.updated ? "Комментарий обновлен " : "Комментарий оставлен "}}{{list.validateDate(singleComment.date)}}</h6>
+                        <button class="pull-right">
+                            Ответить
+                        </button>
                 </div>
                 <div class="loadMore">
                     <button type="button" class="btn"

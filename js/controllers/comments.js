@@ -2,9 +2,9 @@
 
     angular
         .module("Comments")
-        .controller("commentCtrl", ['$http', 'Backand', 'AuthService', CommentController]);
+        .controller("commentCtrl", ['$scope', '$http', 'Backand', 'AuthService', CommentController]);
 
-    function CommentController($http, Backand, AuthService){
+    function CommentController($scope, $http, Backand, AuthService){
         var vm = this;
 
         var baseUrl = Backand.getApiUrl() + '/1/objects/';
@@ -17,6 +17,19 @@
         vm.text = "";
 
         vm.error = "";
+
+        vm.popoverOnAnon = {
+            isOpen: true,
+            templateUrl: 'myPopoverTemplate.html',
+            close : function () {
+                vm.popoverOnAnon.isOpen = false;
+                console.log(22);
+            },
+            auth : function () {
+                vm.popoverOnAnon.close();
+                vm.showAuth()
+            }
+        };
 
         vm.clearError = clearError;
 

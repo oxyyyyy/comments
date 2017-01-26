@@ -34,7 +34,7 @@
     });
 
     angular
-        .module('Comments', ['backand', 'myDirectives'])
+        .module('Comments', ['backand', 'myDirectives', 'ui.bootstrap'])
         .config(function (BackandProvider) {
             BackandProvider.setAppName('comments');
             BackandProvider.setSignUpToken('b129e2be-3559-417a-8e5c-1ed2cc9b7d9d');
