@@ -25,7 +25,8 @@
 
     <div class="container" ng-app="Comments">
         <div class="col-md-8 col-md-offset-2">
-            <div ng-controller="commentCtrl as comment">
+            <div ng-controller="commentsCtrl as comment"
+                 ng-init="comment.readComments()">
                 <div class="header ">
                     {{comment.currentUser.name || "Гость"}}
                     <span class="pull-right">
@@ -93,8 +94,12 @@
                                   ng-model="comment.text"
                                   ng-focus="comment.clearError()"
                                   ng-click="(!comment.currentUser.name) ? comment.setAnonymousPost() : comment.clearError()"
-                                  rows="{{comment.currentUser.name ? 4 : 1}}">
+                                  rows="{{(comment.currentUser.name || comment.answerTo.name) ? 4 : 1}}">
                         </textarea>
+                        <div class="row alert-warning form-control"
+                             ng-show="comment.answerTo.name">
+                            В ответ {{comment.answerTo.name}}
+                        </div>
                     </form>
                     <div uib-alert
                          class="alert-danger"
@@ -102,94 +107,34 @@
                         {{comment.error}}
                     </div>
                 </div>
-            </div>
 
-            <div class="modal authBox"
-                 ng-controller="authCtrl as auth">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2>Авторизация</h2>
-                            <button class=" pull-right"
-                                    data-dismiss="modal">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div uib-alert
-                                 class="alert-danger"
-                                 ng-show="auth.AuthService.authError">
-                                {{auth.AuthService.authError}}
-                            </div>
-                            <form class="registration_form">
-                                <div class="form-group row">
-                                    <label for="email" class="col-md-2 offset-md-3 col-form-label">Email</label>
-                                    <div class="col-md-4">
-                                        <input class="form-control"
-                                               type="email"
-                                               ng-model="auth.username">
-                                    </div>
-                                </div>
-                                <div class="form-group row"
-                                     ng-show="auth.AuthService.newUser">
-                                    <label for="name" class="col-md-2 offset-md-3 col-form-label">Name</label>
-                                    <div class="col-md-4">
-                                        <input class="form-control"
-                                               type="text"
-                                               ng-model="auth.firstName">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="password" class="col-md-2 offset-md-3 col-form-label">Password</label>
-                                    <div class="col-md-4">
-                                        <input class="form-control"
-                                               type="password"
-                                               ng-model="auth.password">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 offset-md-3">
-                                    <button class="btn btn-primary confirm-auth"
-                                            ng-click="auth.authenticate()">
-                                    {{auth.AuthService.newUser ? "Зарегистрироваться" : "Войти"}}
-                                    </button>
-                                </div>
-                            </form>
-                            <div class="col-md-6 offset-md-3">
-                                <button class="btn btn-success toggle-auth"
-                                        ng-click="(auth.AuthService.newUser = (auth.AuthService.newUser ? false : true))">
-                                    {{auth.AuthService.newUser ? "Вход" : "Регистрация"}}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div ng-controller="commentsListCtrl as list"
-                 ng-init="list.readComments()">
                 <div uib-alert
                      class="alert-danger"
-                     ng-show="list.error">
-                    {{list.error}}
+                     ng-show="comment.error">
+                    {{comment.error}}
                 </div>
-                <div class="row commentBox" ng-repeat="singleComment in list.data | orderBy:'-id'"
-                                            ng-show="(($index / list.commentsOnPage) >= list.commentsDisplayIndex) && (($index / list.commentsOnPage) < list.commentsDisplayIndex + 1)"
-                                            ng-init="list.commentOnCreation()">
-                    <button class="btn btn-danger pull-right"
-                            ng-show="(list.currentUser.details.userId == singleComment.created_by)"
-                            ng-click="list.removeComment(singleComment)">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </button>
-                    <button class="btn btn-info pull-right"
-                            ng-click="list.allowUpdate(singleComment)"
-                            ng-show="!singleComment.editable && (list.currentUser.details.userId == singleComment.created_by)">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                    </button>
-                    <button class="btn btn-success pull-right"
-                            ng-click="list.saveUpdatedComment(singleComment)"
-                            ng-show="singleComment.editable && (list.currentUser.details.userId == singleComment.created_by)">
-                        <span class="glyphicon glyphicon-floppy-disk"></span>
-                    </button>
+                <div class="commentAndRelated"
+                     ng-repeat="singleComment in comment.data | orderBy:'-id'"
+                     ng-if="!singleComment.parent"
+                     ng-show="(($index / comment.commentsOnPage) >= comment.commentsDisplayIndex) && (($index / comment.commentsOnPage) < comment.commentsDisplayIndex + 1)"
+                     ng-init="comment.commentOnCreation()">
+                    <div class="row commentBox">
+                        <button class="btn btn-danger pull-right"
+                                ng-show="(comment.currentUser.details.userId == singleComment.created_by)"
+                                ng-click="comment.removeComment(singleComment)">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                        <button class="btn btn-info pull-right"
+                                ng-click="comment.allowUpdate(singleComment)"
+                                ng-show="!singleComment.editable && (comment.currentUser.details.userId == singleComment.created_by)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                        <button class="btn btn-success pull-right"
+                                ng-click="comment.saveUpdatedComment(singleComment)"
+                                ng-show="singleComment.editable && (comment.currentUser.details.userId == singleComment.created_by)">
+                            <span class="glyphicon glyphicon-floppy-disk"></span>
+                        </button>
                         <h4>
                             {{singleComment.author}}
                             <span ng-show="singleComment.anonymous" style="font-size:0.6em">
@@ -200,24 +145,69 @@
                              contenteditable="{{singleComment.editable}}"
                              ng-model="singleComment.comment">
                         </div>
-                        <h6>{{singleComment.updated ? "Комментарий обновлен " : "Комментарий оставлен "}}{{list.validateDate(singleComment.date)}}</h6>
-                        <button class="pull-right">
+                        <h6>{{singleComment.updated ? "Комментарий обновлен " : "Комментарий оставлен "}}{{comment.validateDate(singleComment.date)}}</h6>
+                        <button class="pull-right"
+                                ng-click="comment.setAnswerTo(singleComment)">
                             Ответить
                         </button>
+                    </div>
+
+                    <div class="row answerComment commentBox" ng-repeat="answerComment in comment.data | orderBy:'id'"
+                                                ng-if="answerComment.parent == singleComment.id"
+                                                ng-init="comment.commentOnCreation()">
+                        <button class="btn btn-danger pull-right"
+                                ng-show="(comment.currentUser.details.userId == answerComment.created_by)"
+                                ng-click="comment.removeComment(answerComment)">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                        <button class="btn btn-info pull-right"
+                                ng-click="comment.allowUpdate(answerComment)"
+                                ng-show="!answerComment.editable && (comment.currentUser.details.userId == answerComment.created_by)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                        <button class="btn btn-success pull-right"
+                                ng-click="comment.saveUpdatedComment(answerComment)"
+                                ng-show="answerComment.editable && (comment.currentUser.details.userId == answerComment.created_by)">
+                            <span class="glyphicon glyphicon-floppy-disk"></span>
+                        </button>
+                        <h4>
+                            {{singleComment.author}}
+                            <span ng-show="asnwerComment.anonymous" style="font-size:0.6em">
+                                Аноним
+                            </span>
+                        </h4>
+                        <div class="commentPostedText"
+                             contenteditable="{{answerComment.editable}}"
+                             ng-model="answerComment.comment">
+                        </div>
+                        <h6>{{singleComment.updated ? "Комментарий обновлен " : "Комментарий оставлен "}}{{comment.validateDate(singleComment.date)}}</h6>
+                        <button class="pull-right"
+                                ng-click="comment.setAnswerTo(answerComment)">
+                            Ответить
+                        </button>
+                        <div>
+                            в ответ {{answerComment.in_answer_to}}
+                        </div>
+                    </div>
+
+
                 </div>
+
                 <div class="loadMore">
                     <button type="button" class="btn"
-                            ng-show="list.commentsDisplayIndex != 0"
-                            ng-click="list.nextComments(-1)">
+                            ng-show="comment.commentsDisplayIndex != 0"
+                            ng-click="comment.nextComments(-1)">
                         Предыдущие
                     </button>
                     <button type="button" class="btn"
-                            ng-show="(list.data.length / list.commentsOnPage) > list.commentsDisplayIndex+1"
-                            ng-click="list.nextComments(1)">
+                            ng-show="(comment.data.length / comment.commentsOnPage) > comment.commentsDisplayIndex+1"
+                            ng-click="comment.nextComments(1)">
                         Следующие
                     </button>
                 </div>
             </div>
+
+
         </div>
     </div>
 
@@ -227,7 +217,6 @@
     <script src="js/app.js"></script>
     <script src="js/controllers/auth.js"></script>
     <script src="js/controllers/comments.js"></script>
-    <script src="js/controllers/commentslist.js"></script>
     <script src="js/services/authservice.js"></script>
 
 </body>
