@@ -12,8 +12,6 @@
 
         vm.currentUser = AuthService.currentUser;
 
-        vm.error = "";
-
         //---
         //postcomment-data
         vm.anonymous = false;
@@ -35,11 +33,13 @@
                 vm.showAuth()
             }
         };
+
+        vm.postError = "";
         //---
 
         //---
         //postcomment-methods
-        vm.clearError = clearError;
+        vm.clearPError = clearPError;
 
         vm.setAnonymousPost = setAnonymousPost;
 
@@ -53,8 +53,8 @@
         //---
         //commentlist-data
         vm.data = [];
-        vm.commentsOnPage = 4;
-        vm.commentsDisplayIndex = 0;
+        vm.commentsOnPage = 10;
+        vm.commentsDisplayIndex = 1;
         //---
 
         //---
@@ -72,6 +72,8 @@
         vm.setRows = textareaSetSize;
 
         vm.nextComments = nextComments;
+
+        vm.clearLError = clearLError;
         //---
 
         //---
@@ -117,9 +119,9 @@
 
         function errHandler(err) {
             console.error(err);
-            vm.error = err.data || err;
+            vm.postError = err.data || err;
             setTimeout(function() {
-                vm.error = null;
+                vm.postError = null;
             },2000);
         };
         //---
@@ -132,26 +134,62 @@
 
         function errHandler(err) {
             console.error(err);
-            vm.error = err.data;
+            vm.listError = err.data;
             setTimeout(function() {
-                vm.error = null;
+                vm.listError = null;
             },2000);
         }
 
         function readCommentsList() {
+            vm.data = [];
             return $http({
                 method: 'GET',
-                url: baseUrl + objectName
+                url: baseUrl + objectName,
+                params: {
+                    pageSize: vm.commentsOnPage,
+                    pageNumber: vm.commentsDisplayIndex,
+                    filter: [{
+                        "fieldName" : "parent",
+                        "operator" : "empty",
+                        "value" : "NULL"
+                    }],
+                    sort: [{
+                        "fieldName" : "id",
+                        "order" : "desc"
+                    }]
+                }
             }).then(function(response) {
                 return response.data.data;
             }).then(function(data){
-                vm.data = data;
+                var parents = data;
+                for (var i = 0; i < parents.length; i++) {
+                    if(parents[i].has_children){
+                        getChildren(parents[i].id);
+                    }
+                }
+                vm.data = vm.data.concat(parents);
             });
         };
 
-        function initComment() {
+        function getChildren(id) {
+            return $http ({
+                method: 'GET',
+                url: Backand.getApiUrl() + '/1/query/data/getChildren',
+                params: {
+                    parameters: {
+                        index: id
+                    }
+                }
+            }).then(function(response) {
+                return response.data;
+            }).then(function(data){
+                vm.data = vm.data.concat(data);
+            });
+        };
+
+        function initComment(singleComment) {
             vm.error = null;
-            vm.data.editable = false;
+            singleComment.editable = false;
         };
 
         function editComment(singleComment){
@@ -183,13 +221,13 @@
 
         function nextComments(direction) {
             if(direction>0) {
-                if((vm.data.length / vm.commentsOnPage) > vm.commentsDisplayIndex+1)
                     vm.commentsDisplayIndex++;
             }
             else {
-                if (vm.commentsDisplayIndex > 0)
+                if (vm.commentsDisplayIndex > 1)
                     vm.commentsDisplayIndex--;
             }
+            vm.readComments();
         }
 
         function validateDate(date) {
@@ -221,8 +259,12 @@
         }
         //---
 
-        function clearError() {
-            vm.error = null;
+        function clearLError() {
+            vm.listError = null;
+        }
+
+        function clearPError() {
+            vm.listPError = null;
         }
 
     }
