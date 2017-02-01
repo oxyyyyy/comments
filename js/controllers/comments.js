@@ -12,6 +12,8 @@
 
         vm.currentUser = AuthService.currentUser;
 
+        vm.localEditor = false;
+
         //---
         //postcomment-data
         vm.anonymous = false;
@@ -55,10 +57,15 @@
         vm.data = [];
         vm.commentsOnPage = 10;
         vm.commentsDisplayIndex = 1;
+        vm.totalRows = 0;
+
+        vm.newActions = false;
         //---
 
         //---
         //commentlist-methods
+        vm.actionPerformed = actionPerformed;
+        vm.loadNewDate = loadNewDate;
         vm.removeComment = deleteComment;
         vm.readComments = readCommentsList;
         vm.commentOnCreation = initComment;
@@ -69,8 +76,6 @@
 
         vm.validateDate = validateDate;
 
-        vm.setRows = textareaSetSize;
-
         vm.nextComments = nextComments;
 
         vm.clearLError = clearLError;
@@ -78,6 +83,15 @@
 
         //---
         //postcomment-funcs
+        function actionPerformed() {
+            vm.newActions = true;
+        }
+
+        function loadNewDate() {
+            vm.newActions = false;
+            vm.readComments();
+        }
+
         function initPostComment() {
             vm.text = "";
             vm.author = "";
@@ -88,8 +102,12 @@
         function setAnonymousPost() {
             vm.anonymous = true;
         }
+
         function addComment() {
-            if(vm.currentUser.name != "" && vm.text != ""){
+            if (vm.currentUser.name) {
+                vm.anonymous = false;
+            }
+            if((vm.currentUser.name != "" || vm.author != "") && vm.text != ""){
                 sendToServer();
                 vm.initPostComment();
                 vm.anonymous = false;
@@ -99,6 +117,7 @@
         };
 
         function sendToServer() {
+            vm.localEditor = true;
             return $http({
                 method: 'POST',
                 url : baseUrl + objectName,
@@ -129,7 +148,11 @@
         //---
         //commentlist-funcs
         Backand.on('comments_updated', function (data) {
-            vm.readComments();
+            if (!vm.localEditor)
+                vm.actionPerformed();
+            else
+                vm.readComments();
+            vm.localEditor = false;
         });
 
         function errHandler(err) {
@@ -141,33 +164,40 @@
         }
 
         function readCommentsList() {
-            vm.data = [];
             return $http({
                 method: 'GET',
                 url: baseUrl + objectName,
                 params: {
-                    pageSize: vm.commentsOnPage,
-                    pageNumber: vm.commentsDisplayIndex,
-                    filter: [{
-                        "fieldName" : "parent",
-                        "operator" : "empty",
-                        "value" : "NULL"
-                    }],
+                    pageSize: (vm.commentsOnPage *  vm.commentsDisplayIndex),
+                    pageNumber: 1,
                     sort: [{
                         "fieldName" : "id",
                         "order" : "desc"
                     }]
                 }
             }).then(function(response) {
+                vm.totalRows = response.data.totalRows;
                 return response.data.data;
             }).then(function(data){
-                var parents = data;
-                for (var i = 0; i < parents.length; i++) {
-                    if(parents[i].has_children){
-                        getChildren(parents[i].id);
-                    }
-                }
-                vm.data = vm.data.concat(parents);
+                vm.data = data;
+                vm.data.forEach(function (element, id, arr) {
+                    console.log(element.in_answer_to);
+                    if(element.in_answer_to) {
+                        arr.forEach(function (singleComment) {
+                            if (singleComment.id == element.in_answer_to)
+                            {
+                                element.answer = singleComment.author;
+                            }
+                        });
+                    };
+                })
+                console.log(vm.data);
+                // for (var i = 0; i < parents.length; i++) {
+                //     if(parents[i].has_children){
+                //         getChildren(parents[i].id);
+                //     }
+                // }
+                // vm.data = vm.data.concat(parents);
             });
         };
 
@@ -198,6 +228,7 @@
 
         function updateComment(singleComment) {
             singleComment.editable = false;
+            vm.localEditor = true;
             return $http({
                 method: 'PUT',
                 data: {
@@ -211,6 +242,7 @@
         }
 
         function deleteComment(singleComment) {
+            vm.localEditor = true;
             return $http({
                 method: 'DELETE',
                 url : baseUrl + objectName + '/' + singleComment.id
@@ -219,14 +251,8 @@
             }, errHandler);
         };
 
-        function nextComments(direction) {
-            if(direction>0) {
-                    vm.commentsDisplayIndex++;
-            }
-            else {
-                if (vm.commentsDisplayIndex > 1)
-                    vm.commentsDisplayIndex--;
-            }
+        function nextComments() {
+            if ((vm.commentsDisplayIndex++)*vm.commentsOnPage<=vm.totalRows)
             vm.readComments();
         }
 
@@ -234,23 +260,6 @@
             var newDate = new Date(date.toString());
             //newDate.setTime (newDate.getTime() - newDate.getTimezoneOffset()*60*1000 );
             return newDate.toString().slice(0,21);
-        }
-
-        function textareaSetSize(singleComment) {
-            var comments = $('.commentPostedText');
-            console.log(comments);
-            for(var i = 0; i < comments.length; i++){
-                var pos = 0;
-                var rows = 1;
-                while (true) {
-                    var foundpos = (singleComment.comment).indexOf('\n', pos);
-                    if (foundpos == -1) break;
-                    rows += 1;
-                    pos = foundpos + 1;
-                }
-                comments[i].rows = rows;
-                console.log(rows);
-            }
         }
 
         function setAnswerTo(singleComment) {

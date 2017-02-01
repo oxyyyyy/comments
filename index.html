@@ -114,24 +114,31 @@
                      ng-show="comment.listError">
                     {{comment.listError}}
                 </div>
+
+                <div uib-alert
+                     class="alert-success"
+                     ng-show="comment.newActions"
+                     ng-click="comment.loadNewDate()">
+                    Комментарии обновились
+                </div>
                 <div class="commentAndRelated"
                      ng-repeat="singleComment in comment.data | orderBy:'-id'"
                      ng-if="!singleComment.parent"
                      ng-init="comment.commentOnCreation(singleComment)">
                     <div class="row commentBox">
                         <button class="btn btn-danger pull-right"
-                                ng-show="(comment.currentUser.details.userId == singleComment.created_by)"
+                                ng-show="!singleComment.anonymous && (comment.currentUser.details.userId == singleComment.created_by)"
                                 ng-click="comment.removeComment(singleComment)">
                             <span class="glyphicon glyphicon-remove"></span>
                         </button>
                         <button class="btn btn-info pull-right"
                                 ng-click="comment.allowUpdate(singleComment)"
-                                ng-show="!singleComment.editable && (comment.currentUser.details.userId == singleComment.created_by)">
+                                ng-show="!singleComment.anonymous && !singleComment.editable && (comment.currentUser.details.userId == singleComment.created_by)">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                         <button class="btn btn-success pull-right"
                                 ng-click="comment.saveUpdatedComment(singleComment)"
-                                ng-show="singleComment.editable && (comment.currentUser.details.userId == singleComment.created_by)">
+                                ng-show="!singleComment.anonymous && singleComment.editable && (comment.currentUser.details.userId == singleComment.created_by)">
                             <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                         <h4>
@@ -155,18 +162,18 @@
                                                 ng-if="answerComment.parent == singleComment.id"
                                                 ng-init="comment.commentOnCreation(answerComment)">
                         <button class="btn btn-danger pull-right"
-                                ng-show="(comment.currentUser.details.userId == answerComment.created_by)"
+                                ng-show="!answerComment.anonymous && (comment.currentUser.details.userId == answerComment.created_by)"
                                 ng-click="comment.removeComment(answerComment)">
                             <span class="glyphicon glyphicon-remove"></span>
                         </button>
                         <button class="btn btn-info pull-right"
                                 ng-click="comment.allowUpdate(answerComment)"
-                                ng-show="!answerComment.editable && (comment.currentUser.details.userId == answerComment.created_by)">
+                                ng-show="!answerComment.anonymous && !answerComment.editable && (comment.currentUser.details.userId == answerComment.created_by)">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                         <button class="btn btn-success pull-right"
                                 ng-click="comment.saveUpdatedComment(answerComment)"
-                                ng-show="answerComment.editable && (comment.currentUser.details.userId == answerComment.created_by)">
+                                ng-show="!answerComment.anonymous && answerComment.editable && (comment.currentUser.details.userId == answerComment.created_by)">
                             <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                         <h4>
@@ -185,7 +192,7 @@
                             Ответить
                         </button>
                         <div>
-                            в ответ {{answerComment.in_answer_to}}
+                            в ответ пользавателю "{{answerComment.answer}}"
                         </div>
                     </div>
 
@@ -193,12 +200,9 @@
 
                 <div class="loadMore">
                     <button type="button" class="btn"
-                            ng-click="comment.nextComments(-1)">
-                        Предыдущие
-                    </button>
-                    <button type="button" class="btn"
-                            ng-click="comment.nextComments(1)">
-                        Следующие
+                            ng-show="comment.commentsDisplayIndex*comment.commentsOnPage<comment.totalRows"
+                            ng-click="comment.nextComments()">
+                        Показать еще
                     </button>
                 </div>
             </div>
