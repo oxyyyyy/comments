@@ -49,10 +49,12 @@
                                    ng-show="!comment.currentUser.name"
                                    ng-click="(!comment.currentUser.name) ? comment.setAnonymousPost() : comment.clearPError()"
                                    class="form-control anonymousName"
+                                   ng-focus="comment.popoverOnAnon.autoClose()"
                                    ng-model="comment.author">
                                    <!-- ??? -->
                             <input type="checkbox" class="anonymousCheck"
                                                    ng-show="!comment.currentUser.name"
+                                                   ng-focus="comment.popoverOnAnon.autoClose()"
                                                    ng-model="comment.anonymous">
                             <label for="anonymousCheck"
                                    class="label label-warning"
@@ -92,33 +94,27 @@
                                   onfocus="placeholder=''"
                                   onblur="placeholder='Оставьте комментарий..'  "
                                   ng-model="comment.text"
-                                  ng-focus="comment.clearError()"
+                                  ng-focus="comment.popoverOnAnon.autoClose()"
                                   ng-click="(!comment.currentUser.name) ? comment.setAnonymousPost() : comment.clearError()"
-                                  rows="{{(comment.currentUser.name || comment.answerTo.name) ? 4 : 1}}">
+                                  rows="{{(comment.currentUser.name || comment.answerTo.name || comment.anonymous) ? 4 : 1}}">
                         </textarea>
                         <div class="row alert-warning form-control"
                              ng-show="comment.answerTo.name">
                             В ответ {{comment.answerTo.name}}
                         </div>
                     </form>
-                    <div uib-alert
-                         class="alert-danger"
-                         ng-show="comment.postError">
-                        {{comment.postError}}
-                    </div>
                 </div>
-
 
                 <div uib-alert
                      class="alert-danger"
-                     ng-show="comment.listError">
-                    {{comment.listError}}
+                     ng-show="comment.error">
+                    {{comment.error}}
                 </div>
 
                 <div uib-alert
                      class="alert-success"
                      ng-show="comment.newActions"
-                     ng-click="comment.loadNewDate()">
+                     ng-click="comment.loadNewData()">
                     Комментарии обновились
                 </div>
                 <div class="commentAndRelated"

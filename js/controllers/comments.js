@@ -13,6 +13,7 @@
         vm.currentUser = AuthService.currentUser;
 
         vm.localEditor = false;
+        vm.error = "";
 
         //---
         //postcomment-data
@@ -30,18 +31,23 @@
             close : function () {
                 vm.popoverOnAnon.isOpen = false;
             },
+            autoClose : function () {
+                setTimeout(function () {
+                    vm.popoverOnAnon.close();
+                },1000)
+            },
             auth : function () {
                 vm.popoverOnAnon.close();
-                vm.showAuth()
+                setTimeout(function () {
+                    vm.showAuth();
+                },500)
             }
         };
 
-        vm.postError = "";
         //---
 
         //---
         //postcomment-methods
-        vm.clearPError = clearPError;
 
         vm.setAnonymousPost = setAnonymousPost;
 
@@ -65,7 +71,7 @@
         //---
         //commentlist-methods
         vm.actionPerformed = actionPerformed;
-        vm.loadNewDate = loadNewDate;
+        vm.loadNewData = loadNewData;
         vm.removeComment = deleteComment;
         vm.readComments = readCommentsList;
         vm.commentOnCreation = initComment;
@@ -77,8 +83,6 @@
         vm.validateDate = validateDate;
 
         vm.nextComments = nextComments;
-
-        vm.clearLError = clearLError;
         //---
 
         //---
@@ -87,7 +91,7 @@
             vm.newActions = true;
         }
 
-        function loadNewDate() {
+        function loadNewData() {
             vm.newActions = false;
             vm.readComments();
         }
@@ -138,30 +142,25 @@
 
         function errHandler(err) {
             console.error(err);
-            vm.postError = err.data || err;
+            vm.error = err.data || err;
             setTimeout(function() {
-                vm.postError = null;
-            },2000);
+                vm.error = null;
+            },1000);
         };
         //---
 
         //---
         //commentlist-funcs
         Backand.on('comments_updated', function (data) {
-            if (!vm.localEditor)
+            if (!vm.localEditor) {
                 vm.actionPerformed();
-            else
+            }
+            else {
                 vm.readComments();
+            }
+
             vm.localEditor = false;
         });
-
-        function errHandler(err) {
-            console.error(err);
-            vm.listError = err.data;
-            setTimeout(function() {
-                vm.listError = null;
-            },2000);
-        }
 
         function readCommentsList() {
             return $http({
@@ -181,7 +180,6 @@
             }).then(function(data){
                 vm.data = data;
                 vm.data.forEach(function (element, id, arr) {
-                    console.log(element.in_answer_to);
                     if(element.in_answer_to) {
                         arr.forEach(function (singleComment) {
                             if (singleComment.id == element.in_answer_to)
