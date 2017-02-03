@@ -79,6 +79,7 @@
         vm.saveUpdatedComment = updateComment;
 
         vm.setAnswerTo = setAnswerTo;
+        vm.clearAnswerTo = clearAnswerTo;
 
         vm.validateDate = validateDate;
 
@@ -264,15 +265,12 @@
             vm.answerTo.name = singleComment.author;
             vm.answerTo.id = singleComment.id;
         }
+
+        function clearAnswerTo(){
+            vm.answerTo.name = null;
+            vm.answerTo.id = null;
+        }
         //---
-
-        function clearLError() {
-            vm.listError = null;
-        }
-
-        function clearPError() {
-            vm.listPError = null;
-        }
 
     }
 })();

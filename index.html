@@ -101,6 +101,10 @@
                         <div class="row alert-warning form-control"
                              ng-show="comment.answerTo.name">
                             В ответ {{comment.answerTo.name}}
+                            <span style="border: 1px solid red"
+                                  ng-click="comment.clearAnswerTo()">
+                                X
+                            </span>
                         </div>
                     </form>
                 </div>
