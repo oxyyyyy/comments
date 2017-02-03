@@ -1,51 +1,69 @@
-.form-control{
-    margin: 0.1em;
-    float: left;
-    width: auto;
-}
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  background-color: #F5F5F5;
+  padding-bottom: 50px; }
 
-.commentText{
+.form-control {
+  margin: 0.1em;
+  float: left;
+  width: auto; }
+
+.commentText {
   width: 100%;
   height: auto;
-  resize: none;
-}
+  resize: none; }
 
-.commentBox{
-  border: 1px solid silver;
+.commentBox {
+  background-color: #fff;
+  border: 1px solid #e3e3e3;
+  border-radius: 3px;
   height: auto;
-  margin: 0.1em;
-}
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 15px; }
+  .commentBox:last-child {
+    margin-bottom: 40px; }
 
-.header{
-  border-top: 1px solid silver;
-  border-bottom: 1px solid silver;
-  margin: 1em 0;
-}
+.header {
+  font-size: 20px;
+  padding: 15px;
+  margin-top: 50px; }
+  .header span {
+    font-weight: 700; }
 
-.headerAuthBtn{
-  background: none;
-  color: none;
-  border: none;
-}
-
-.commentPostedText{
-  /*background: none;*/
+.commentPostedText {
   resize: none;
-  border: 1px solid green;
+  border-top: 1px solid #e3e3e3;
   overflow: hidden;
   word-wrap: break-word;
   white-space: pre-line;
   height: auto;
-  width: auto;
-}
+  width: auto; }
 
-.errorMsgBox{
+.errorMsgBox {
   border: 1px solid red;
   border-radius: 15px;
   font-size: 1em;
-  margin: 1em 0;
-}
+  margin: 1em 0; }
 
-.answerComment{
-  margin-left: 30px;
-}
+.answerComment {
+  margin-left: 30px; }
+
+.well-sm {
+  background-color: #fff;
+  padding: 15px; }
+  .well-sm .anonymousCheck {
+    margin: 11px !important; }
+  .well-sm #label_comment_form {
+    position: relative !important;
+    top: -4px !important;
+    left: -3px !important; }
+  .well-sm .commentText {
+    margin-top: 15px; }
+
+.modal h2 {
+  display: inline-block; }
+
+/*# sourceMappingURL=style.css.map */
