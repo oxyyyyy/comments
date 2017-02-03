@@ -4,12 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Comments</title>
+
     <!-- Bootstrap css and my own css -->
     <link rel="stylesheet"
         href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
         integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
         crossorigin="anonymous">
+
+    <!-- Own styles -->
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Roboto font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700&amp;subset=cyrillic" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.2/angular.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
@@ -27,10 +33,10 @@
         <div class="col-md-8 col-md-offset-2">
             <div ng-controller="commentsCtrl as comment"
                  ng-init="comment.readComments()">
-                <div class="header ">
+                <div class="header panel panel-default">
                     {{comment.currentUser.name || "Гость"}}
                     <span class="pull-right">
-                        <button class="headerAuthBtn"
+                        <button class="headerAuthBtn btn btn-success"
                                 ng-click="comment.currentUser.name ? comment.logout() : comment.showAuth()">
                         {{comment.currentUser.name ? "Выйти" : "Авторизироваться"}}
                         </button>
@@ -57,7 +63,7 @@
                                                    ng-focus="comment.popoverOnAnon.autoClose()"
                                                    ng-model="comment.anonymous">
                             <label for="anonymousCheck"
-                                   class="label label-warning"
+                                   class="label label-warning" id="label_comment_form" 
                                    uib-popover-template="comment.popoverOnAnon.templateUrl"
                                    popover-placement="right"
                                    popover-is-open="comment.anonymous && comment.popoverOnAnon.isOpen"
@@ -152,7 +158,7 @@
                              ng-model="singleComment.comment">
                         </div>
                         <h6>{{singleComment.updated ? "Комментарий обновлен " : "Комментарий оставлен "}}{{comment.validateDate(singleComment.date)}}</h6>
-                        <button class="pull-right"
+                        <button class="pull-right btn btn-default"
                                 ng-click="comment.setAnswerTo(singleComment)">
                             Ответить
                         </button>
@@ -187,7 +193,7 @@
                              ng-model="answerComment.comment">
                         </div>
                         <h6>{{answerComment.updated ? "Комментарий обновлен " : "Комментарий оставлен "}}{{comment.validateDate(answerComment.date)}}</h6>
-                        <button class="pull-right"
+                        <button class="pull-right btn btn-default"
                                 ng-click="comment.setAnswerTo(answerComment)">
                             Ответить
                         </button>
@@ -213,10 +219,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h2>Авторизация</h2>
-                            <button class=" pull-right"
-                                    data-dismiss="modal">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         </div>
                         <div class="modal-body">
                             <div uib-alert
@@ -250,19 +253,15 @@
                                                ng-model="auth.password">
                                     </div>
                                 </div>
-                                <div class="col-md-6 offset-md-3">
                                     <button class="btn btn-primary confirm-auth"
                                             ng-click="auth.authenticate()">
                                     {{auth.AuthService.newUser ? "Зарегистрироваться" : "Войти"}}
                                     </button>
-                                </div>
-                            </form>
-                            <div class="col-md-6 offset-md-3">
-                                <button class="btn btn-success toggle-auth"
+                                    <button class="btn btn-success toggle-auth"
                                         ng-click="(auth.AuthService.newUser = (auth.AuthService.newUser ? false : true))">
                                     {{auth.AuthService.newUser ? "Вход" : "Регистрация"}}
-                                </button>
-                            </div>
+                                    </button>
+                            </form>
                         </div>
                     </div>
                 </div>
